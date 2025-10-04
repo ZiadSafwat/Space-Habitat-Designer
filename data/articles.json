@@ -1,0 +1,140 @@
+{
+  "articles": [
+    {
+      "id": 1,
+      "title": "Optimal Living Space for Mars Missions",
+      "author": "NASA Research Team",
+      "date": "2020-01-15",
+      "category": "Space Habitats",
+      "image": "images/articles/mars.png",
+      "pdf": "https://ntrs.nasa.gov/api/citations/20200002973/downloads/20200002973.pdf",
+      "excerpt": "NASA's comprehensive study on calculating optimal living space for astronauts during long-duration Mars missions.",
+      "content": [
+        "This NASA study provides a detailed analysis of the living space requirements for astronauts on extended missions to Mars. Instead of making rough estimates, the research team conducted a systematic examination of every function the crew performs during their mission.",
+        "The study breaks down various activities including sleeping, eating, exercising, hygiene, and social interactions, assigning specific space requirements for each. By analyzing these needs and incorporating smart space-sharing strategies, the research establishes minimum volume requirements for both comfort and health.",
+        "Key findings include the importance of flexible spaces that can serve multiple functions, the need for private crew quarters, and the benefits of vertical space utilization. The study also considers the psychological impact of confined spaces during long-duration missions.",
+        "The research provides mission planners with a data-driven blueprint for designing habitats that support both the physical and mental well-being of astronauts. These findings are already influencing the design of next-generation space habitats for deep space exploration.",
+        "By establishing these guidelines, NASA is ensuring that future Mars missions will have habitats that are not only functional and efficient but also supportive of crew health and performance throughout the entire duration of the mission."
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Moon to Mars: NASA's Exploration Strategy",
+      "author": "NASA Exploration Systems Development",
+      "date": "2023-01-10",
+      "category": "Space Exploration",
+      "image": "images/articles/moon.jpg",
+      "pdf": "https://www.nasa.gov/wp-content/uploads/2024/01/rev-a-acr23-esdmd-001-m2madd.pdf",
+      "excerpt": "NASA's comprehensive architecture for human exploration from the Moon to Mars.",
+      "content": [
+        "This comprehensive NASA report outlines the ambitious architecture for human exploration from the Moon to Mars, detailing the complex systems and strategies that will enable sustained human presence beyond Earth.",
+        "The document presents a dynamic, evolving framework that combines innovative engineering with international collaboration and cutting-edge technology. It covers all aspects of the mission architecture, from launch systems to surface operations, with a focus on sustainability and reusability.",
+        "Key components include the Space Launch System (SLS), Orion spacecraft, Lunar Gateway, and next-generation spacesuits. The architecture also addresses the challenges of deep space habitation, surface mobility, and in-situ resource utilization.",
+        "A significant portion of the report is dedicated to the development of surface habitats that can support long-duration stays on both the Moon and Mars. These habitats will serve as testbeds for the technologies and operational concepts needed for the first human mission to Mars.",
+        "The architecture emphasizes international and commercial partnerships, with a modular approach that allows for flexibility as new technologies emerge. This framework not only supports NASA's Artemis program but also lays the foundation for humanity's next giant leap to the Red Planet."
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Mars Habitat Design and Construction",
+      "author": "NASA Advanced Concepts Office",
+      "date": "2021-05-20",
+      "category": "Mars Colonization",
+      "image": "images/articles/mars2.jpg",
+      "pdf": "https://ntrs.nasa.gov/citations/20210022105",
+      "excerpt": "NASA's vision for advanced habitat and surface construction technologies on Mars.",
+      "content": [
+        "This NASA report presents a visionary roadmap for sustained human presence on Mars, focusing on the development of advanced habitat and surface construction technologies. It explores the evolution from initial, temporary habitats to permanent surface bases that can support human life for extended periods.",
+        "The study highlights the transition from prefabricated, Earth-launched modules to structures built using in-situ resources. Key technologies include 3D printing with Martian regolith, autonomous construction robots, and self-healing materials that can withstand the harsh Martian environment.",
+        "Radiation protection is a major focus, with designs incorporating multiple layers of shielding, including water walls and regolith-based barriers. The habitats are designed to be modular, allowing for expansion as the colony grows and new technologies become available.",
+        "The report also addresses life support systems, energy generation, and waste recycling, all critical components for maintaining a sustainable presence on Mars. The proposed designs prioritize crew safety while maximizing scientific return and operational efficiency.",
+        "By combining cutting-edge engineering with realistic mission planning, this report provides a comprehensive framework for establishing and maintaining human habitats on Mars, paving the way for humanity's future as a multi-planetary species."
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Inflatable Space Habitats",
+      "author": "NASA Advanced Exploration Systems",
+      "date": "2019-01-10",
+      "category": "Space Technology",
+      "image": "images/articles/habitat.png",
+      "pdf": "https://ntrs.nasa.gov/api/citations/20190000847/downloads/20190000847.pdf",
+      "excerpt": "NASA's research on inflatable habitat technologies for space exploration.",
+      "content": [
+        "NASA's exploration into inflatable habitats is revolutionizing how we imagine living in space. These ingenious structures, which fold tightly for launch and expand to create spacious living quarters, promise dramatic reductions in both launch volume and mass compared to traditional rigid modules.",
+        "The report details the development of advanced materials and construction techniques that make these habitats viable for long-duration space missions. The multi-layered shells, incorporating materials like Kevlar and Vectran, provide robust protection against space hazards including micrometeoroid impacts and radiation.",
+        "Key innovations include flexible environmental control systems, deployable radiation shielding, and modular interior configurations that can be adapted for different mission requirements. The habitats are designed to integrate with other space infrastructure, such as the Lunar Gateway and future Mars transit vehicles.",
+        "Testing in both ground-based facilities and on the International Space Station has validated the structural integrity and performance of these habitats in the space environment. The technology has progressed from early concepts in the 1960s to flight-proven systems ready for implementation in future lunar and Martian bases.",
+        "This research represents a critical step toward making deep space exploration more sustainable and cost-effective, with applications ranging from lunar surface habitats to Mars transit vehicles and beyond."
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Autonomous Construction for Mars Habitats",
+      "author": "NASA Space Technology Mission Directorate",
+      "date": "2021-05-15",
+      "category": "Mars Technology",
+      "image": "images/articles/mars.png",
+      "pdf": "https://ntrs.nasa.gov/citations/20210022105",
+      "excerpt": "Advancements in robotic and automated construction for Martian habitats.",
+      "content": [
+        "The NASA report on Autonomous Construction for Mars Habitat explores innovative technologies and strategies to enable robots and automated systems to build habitats on Mars. This approach is essential for establishing sustainable infrastructure before human arrival and for ongoing expansion of surface facilities.",
+        "The study focuses on In-Situ Resource Utilization (ISRU) to minimize the need for materials transported from Earth. This includes processing Martian regolith into construction materials, extracting water ice, and producing other necessary resources locally.",
+        "Key technologies covered include 3D printing systems adapted for the Martian environment, autonomous robotic assemblers, and AI-driven construction management systems. These systems must operate in challenging conditions including extreme temperature variations, dust storms, and reduced gravity.",
+        "The report also addresses the integration of life support systems, power generation, and radiation shielding into the autonomous construction process. The goal is to create self-sustaining habitats that can be built, maintained, and expanded with minimal human intervention.",
+        "By developing these autonomous construction capabilities, NASA aims to significantly reduce the cost and risk of human exploration while enabling the establishment of permanent, expandable surface infrastructure on Mars."
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Lunar Habitat Internal Design",
+      "author": "NASA Human Exploration and Operations",
+      "date": "2022-03-15",
+      "category": "Lunar Exploration",
+      "image": "images/articles/satellite-67718_640.jpg",
+      "pdf": "https://ntrs.nasa.gov/citations/20220013735",
+      "excerpt": "Optimizing internal layouts for sustainable lunar habitats.",
+      "content": [
+        "This NASA report explores the optimized internal design of lunar habitats aimed at supporting sustainable human missions on the Moon. The study focuses on creating living and working spaces that maximize crew health, safety, and productivity during extended lunar stays.",
+        "The research evaluates various habitat layouts, considering factors such as crew size, mission duration, and scientific objectives. Key design principles include the separation of 'clean' and 'dirty' zones, efficient traffic flow, and flexible spaces that can adapt to different activities throughout the mission.",
+        "The report details specific recommendations for different habitat areas, including crew quarters, workspaces, hygiene facilities, and recreational areas. Special attention is given to radiation protection, with designs incorporating water walls and regolith shielding to minimize crew exposure to space radiation.",
+        "Human factors are a major consideration, with the layout designed to support both individual privacy and group interactions. The habitat includes dedicated spaces for exercise, medical care, and Earth communication to support crew psychological well-being.",
+        "The findings from this research are informing the design of the Artemis program's lunar base and will serve as a foundation for future Mars surface habitats, ensuring that long-duration space missions can be conducted safely and effectively."
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Moon to Mars Transit Habitat Design",
+      "author": "NASA Advanced Exploration Systems",
+      "date": "2023-07-12",
+      "category": "Deep Space Habitats",
+      "image": "images/articles/spaceship-5570682_640.jpg",
+      "pdf": "https://ntrs.nasa.gov/api/citations/20220014975/downloads/IEEE_TH-Design_FINAL_Resubmit_12July2023.pdf",
+      "excerpt": "NASA's reference design for the Moon to Mars Transit Habitat.",
+      "content": [
+        "The 2023 NASA paper on the Moon to Mars Transit Habitat (TH) presents a refined government reference design critical for supporting long-duration human missions to Mars. This habitat will serve as a crucial component of NASA's deep space exploration architecture.",
+        "The TH features a hybrid design that combines a metallic core with an inflatable softgoods section, providing approximately 400 m³ of pressurized volume. This space is intelligently configured across three levels, housing living quarters, exercise areas, laboratories, and comprehensive life-support systems.",
+        "Key design challenges addressed include ensuring crew health and safety during missions of up to 1,200 days, maintaining systems with limited resupply options, and providing adequate protection against deep space radiation. The habitat is designed to operate autonomously when uncrewed and support a crew of four during transit.",
+        "The TH will first be tested in lunar orbit as part of the Gateway space station, where it will validate systems and operational concepts before being used for the journey to Mars. The design includes docking ports for connection with other spacecraft elements, including the Orion capsule and Mars landers.",
+        "Ongoing development focuses on technology maturation, mass reduction, and system reliability improvements. This habitat represents a critical step toward enabling sustainable human exploration of deep space and the eventual journey to Mars in the late 2030s."
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Deep Space Habitability Guidelines",
+      "author": "NASA Human Research Program",
+      "date": "2020-01-10",
+      "category": "Space Habitability",
+      "image": "images/articles/galaxy-11188_640.jpg",
+      "pdf": "https://ntrs.nasa.gov/api/citations/20200001427/downloads/20200001427.pdf",
+      "excerpt": "Design guidelines for deep space habitats based on NASA's NextSTEP program.",
+      "content": [
+        "The 'Deep Space Habitability Design Guidelines' report summarizes essential recommendations for deep space habitats based on NASA's NextSTEP Phase 2 Ground Test Program. These guidelines are derived from extensive astronaut evaluations of multiple habitat prototypes during simulated missions.",
+        "Key findings emphasize that efficient habitat layout is more critical than sheer volume. The report advocates for clear separation between 'clean' zones (crew quarters, galley, workspaces) and 'dirty' zones (waste management, exercise areas) to maintain hygiene and operational efficiency.",
+        "The study identifies several critical capabilities for deep space habitats, including hardwired multipurpose workstations, efficient trash removal systems, strategically placed viewing windows, and separate waste collection areas. These features were consistently rated as high-priority by test crews.",
+        "For missions longer than 30 days, the research highlights the importance of private crew quarters, dedicated hygiene facilities, and well-organized storage systems. The report provides specific recommendations for exercise equipment, galley design, and waste management protocols to support crew health and mission success.",
+        "These evidence-based guidelines are informing the design of current and future space habitats, including the Lunar Gateway and Mars transit vehicles, ensuring they meet the physical and psychological needs of astronauts on long-duration missions far from Earth."
+      ]
+    }
+  ]
+}

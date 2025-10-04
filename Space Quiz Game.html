@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Quiz Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-container {
+            max-width: 800px;
+            width: 90%;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            color: #4fc3f7;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .level-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .level-btn {
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .level-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        
+        .question-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .question {
+            font-size: 22px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            text-align: center;
+            color: #e3f2fd;
+        }
+        
+        .answers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .answer-btn {
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .answer-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .answer-btn:hover {
+            border-color: #4fc3f7;
+            background: rgba(79,195,247,0.2);
+        }
+        
+        .answer-btn:hover::before {
+            left: 100%;
+        }
+        
+        .answer-btn.selected {
+            background: linear-gradient(45deg, #4fc3f7, #29b6f6);
+            color: #1a1a2e;
+            border-color: #81d4fa;
+            font-weight: bold;
+            transform: scale(1.02);
+        }
+        
+        .next-btn, .finish-btn, .restart-btn {
+            background: linear-gradient(45deg, #43a047, #66bb6a);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .next-btn:hover, .finish-btn:hover, .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        
+        .score-container {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .score {
+            font-size: 4em;
+            color: #4fc3f7;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .progress {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(45deg, #43a047, #66bb6a);
+            height: 100%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #4fc3f7;
+            animation: fall 3s linear infinite;
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .question-number {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #81d4fa;
+            font-size: 18px;
+        }
+        
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .level-selection {
+                grid-template-columns: 1fr;
+            }
+            
+            .question {
+                font-size: 18px;
+            }
+            
+            .score {
+                font-size: 3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🚀 Space Quiz Game 🚀</h1>
+        
+        <!-- Level Selection Screen -->
+        <div id="levelScreen">
+            <h2 style="text-align: center; margin-bottom: 20px;">Choose Your Difficulty Level:</h2>
+            <div class="level-selection">
+                <button class="level-btn" onclick="startGame('beginner')">
+                    🌟 Beginner<br>
+                    <small>Easy and fun questions</small>
+                </button>
+                <button class="level-btn" onclick="startGame('intermediate')">
+                    🌍 Intermediate<br>
+                    <small>A bit more challenging</small>
+                </button>
+                <button class="level-btn" onclick="startGame('advanced')">
+                    🚀 Advanced<br>
+                    <small>For space enthusiasts</small>
+                </button>
+                <button class="level-btn" onclick="startGame('professional')">
+                    🛰️ Professional<br>
+                    <small>Expert challenge</small>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <div class="progress">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            
+            <div id="questionNumber" class="question-number"></div>
+            
+            <div class="question-container">
+                <div id="question" class="question"></div>
+                <div id="answers" class="answers"></div>
+            </div>
+            
+            <button id="nextBtn" class="next-btn hidden" onclick="nextQuestion()">Next Question</button>
+            <button id="finishBtn" class="finish-btn hidden" onclick="showResults()">Show Results</button>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="resultScreen" class="hidden">
+            <div class="score-container">
+                <h2>🎉 Game Complete! 🎉</h2>
+                <div id="finalScore" class="score"></div>
+                <div id="scoreMessage" style="font-size: 20px; margin: 20px 0;"></div>
+                <button class="restart-btn" onclick="restartGame()">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Celebration Effect -->
+    <div id="celebration" class="celebration hidden"></div>
+    
+    <!-- Audio for applause -->
+    <audio id="applauseSound" preload="auto">
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA" type="audio/mpeg">
+        <!-- Using a web-based applause sound -->
+    </audio>
+
+    <script>
+        // Questions Database
+        const questionsData = {
+            beginner: [
+                {
+                    question: "What is a space habitat?",
+                    answers: ["A house in space for astronauts", "A swimming pool", "A car"],
+                    correct: 0
+                },
+                {
+                    question: "Why do astronauts need a space habitat?",
+                    answers: ["To play football", "To live, eat, and sleep safely in space", "To ride bicycles"],
+                    correct: 1
+                },
+                {
+                    question: "What do astronauts do in a habitat?",
+                    answers: ["Sleep, eat, and exercise", "Swim in the ocean", "Drive buses"],
+                    correct: 0
+                },
+                {
+                    question: "Where can space habitats be?",
+                    answers: ["On the Moon, in space, or on Mars", "Under the sea only", "On Earth only"],
+                    correct: 0
+                },
+                {
+                    question: "What do astronauts need in their habitat?",
+                    answers: ["Food and water", "Only games", "Nothing"],
+                    correct: 0
+                },
+                {
+                    question: "What are parts of a space habitat?",
+                    answers: ["Kitchen, bedroom, bathroom, exercise area", "Playground, cinema, zoo", "Hotel, mall, cafe"],
+                    correct: 0
+                },
+                {
+                    question: "What do astronauts need to sleep well in space?",
+                    answers: ["Beds or sleeping stations", "Clouds and pillows from Earth", "Sleep outside on the Moon"],
+                    correct: 0
+                }
+            ],
+            intermediate: [
+                {
+                    question: "What does 'habitable volume' mean?",
+                    answers: ["Space where astronauts can live and work", "Space for storing rocks only", "Empty space outside the spaceship"],
+                    correct: 0
+                },
+                {
+                    question: "Why does NASA want to test habitats on the Moon first?",
+                    answers: ["To practice before going to Mars", "To find cheese", "To take pictures only"],
+                    correct: 0
+                },
+                {
+                    question: "What do habitats need for astronauts to stay healthy?",
+                    answers: ["Life support, food, sleep, and exercise areas", "Only windows", "Music and games only"],
+                    correct: 0
+                },
+                {
+                    question: "Which is an example of a habitat type?",
+                    answers: ["Inflatable habitat", "Wooden house", "Igloo"],
+                    correct: 0
+                },
+                {
+                    question: "Why is exercise important inside a space habitat?",
+                    answers: ["To keep astronauts' bodies strong in space", "To make noise", "To pass time"],
+                    correct: 0
+                },
+                {
+                    question: "What makes a good habitat design?",
+                    answers: ["Safe, comfortable, and efficient use of space", "Looks pretty only", "Uses lots of power"],
+                    correct: 0
+                }
+            ],
+            advanced: [
+                {
+                    question: "What are the three main classes of habitats defined by NASA?",
+                    answers: ["Metallic, inflatable, and surface-manufactured", "Plastic, wood, and glass", "Permanent, temporary, floating"],
+                    correct: 0
+                },
+                {
+                    question: "What is 'Net Habitable Volume (NHV)'?",
+                    answers: ["The volume where astronauts can live/work (excluding storage & systems)", "The total spacecraft size", "The fuel tank size"],
+                    correct: 0
+                },
+                {
+                    question: "Why are 'constraints' important in habitat design?",
+                    answers: ["They set limits from rockets, mission length, and crew size", "They make design easier with no limits", "They are not important"],
+                    correct: 0
+                },
+                {
+                    question: "Which function is included in NHV calculation?",
+                    answers: ["Exercise", "External propulsion system", "Radiation shielding"],
+                    correct: 0
+                },
+                {
+                    question: "Why weren't old methods (like Celentano curves) sufficient?",
+                    answers: ["Used short-duration missions and didn't cover all crew functions", "Were too detailed", "Had too much math"],
+                    correct: 0
+                },
+                {
+                    question: "What is the 'bottom-up' approach in habitat design?",
+                    answers: ["Starting with individual crew needs and building up", "Starting from the roof", "Using only computers"],
+                    correct: 0
+                }
+            ],
+            professional: [
+                {
+                    question: "The pressurized volume of a habitat is divided into which four categories?",
+                    answers: ["NHV, systems, logistics, and void volume", "NHV, systems, storage, and void volume", "Payload, stowage, crew, and EVA"],
+                    correct: 1
+                },
+                {
+                    question: "In the bottom-up approach, how are volumes defined?",
+                    answers: ["By assigning volume per crew function, then aggregating", "By taking historical spacecraft averages", "By scaling from Mars gravity"],
+                    correct: 0
+                },
+                {
+                    question: "What dominates the hygiene volume allocation?",
+                    answers: ["Full-body cleaning", "Oral hygiene", "Hair styling"],
+                    correct: 0
+                },
+                {
+                    question: "For a 4-crew mission, how much volume was allocated for full crew meal consumption?",
+                    answers: ["5 m³", "10.09 m³", "15 m³"],
+                    correct: 1
+                },
+                {
+                    question: "Which is excluded from NHV definition?",
+                    answers: ["Mission-specific payload equipment", "Sleeping areas", "Food areas"],
+                    correct: 0
+                },
+                {
+                    question: "Why are ISRU strategies beneficial for habitat construction?",
+                    answers: ["Reduce launch mass by using local regolith for shielding/structure", "Provide more entertainment", "Eliminate need for life support"],
+                    correct: 0
+                }
+            ]
+        };
+
+        // Game Variables
+        let currentLevel = '';
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let selectedAnswerIndex = -1;
+        let score = 0;
+        let userAnswers = [];
+
+        // Initialize applause sound from a free source
+        function initializeApplause() {
+            const audio = document.getElementById('applauseSound');
+            // Using a simple beep sound as applause substitute (works without external files)
+            audio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYgECGH0fPTgjUHL3y49d5XGA5M'; // Simple beep sound data
+        }
+
+        // Start Game
+        function startGame(level) {
+            initializeApplause();
+            currentLevel = level;
+            
+            // Get random questions from selected level
+            const allQuestions = questionsData[level];
+            const numberOfQuestions = Math.floor(Math.random() * 3) + 7; // 7-9 questions
+            
+            // Shuffle and take required number
+            currentQuestions = shuffleArray([...allQuestions]).slice(0, numberOfQuestions);
+            
+            // Reset variables
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            
+            // Hide level screen and show game screen
+            document.getElementById('levelScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            
+            showQuestion();
+        }
+
+        // Shuffle Array
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Show Current Question
+        function showQuestion() {
+            const question = currentQuestions[currentQuestionIndex];
+            
+            // Update progress bar
+            const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Show question number
+            document.getElementById('questionNumber').textContent = 
+                `Question ${currentQuestionIndex + 1} of ${currentQuestions.length}`;
+            
+            // Show question
+            document.getElementById('question').textContent = question.question;
+            
+            // Show answers
+            const answersContainer = document.getElementById('answers');
+            answersContainer.innerHTML = '';
+            
+            question.answers.forEach((answer, index) => {
+                const button = document.createElement('button');
+                button.className = 'answer-btn';
+                button.textContent = answer;
+                button.onclick = () => selectAnswer(index);
+                answersContainer.appendChild(button);
+            });
+            
+            // Hide navigation buttons
+            document.getElementById('nextBtn').classList.add('hidden');
+            document.getElementById('finishBtn').classList.add('hidden');
+            selectedAnswerIndex = -1;
+        }
+
+        // Select Answer
+        function selectAnswer(index) {
+            selectedAnswerIndex = index;
+            
+            // Remove previous selection
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selection to chosen answer
+            document.querySelectorAll('.answer-btn')[index].classList.add('selected');
+            
+            // Show appropriate button
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                document.getElementById('nextBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('finishBtn').classList.remove('hidden');
+            }
+        }
+
+        // Next Question
+        function nextQuestion() {
+            // Save answer
+            userAnswers.push(selectedAnswerIndex);
+            
+            // Calculate score
+            if (selectedAnswerIndex === currentQuestions[currentQuestionIndex].correct) {
+                score++;
+            }
+            
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        // Show Results
+        function showResults() {
+            // Save last answer
+            userAnswers.push(selectedAnswerIndex);
+            
+            // Calculate final score
+            if (selectedAnswerIndex === currentQuestions[currentQuestionIndex].correct) {
+                score++;
+            }
+            
+            // Hide game screen and show results screen
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            
+            // Show score
+            document.getElementById('finalScore').textContent = `${score}/${currentQuestions.length}`;
+            
+            // Show message and effects
+            const percentage = (score / currentQuestions.length) * 100;
+            let message = '';
+            
+            if (score > 4) {
+                // Play applause sound and show celebration
+                playApplause();
+                showCelebration();
+                
+                if (percentage >= 90) {
+                    message = '🌟 Excellent! You are a space expert!';
+                } else if (percentage >= 70) {
+                    message = '👏 Great job! Keep learning!';
+                } else {
+                    message = '🎉 Good work! You passed!';
+                }
+            } else {
+                if (percentage >= 50) {
+                    message = '👍 Not bad! You can improve!';
+                } else {
+                    message = '💪 Don\'t give up! Try again!';
+                }
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+        }
+
+        // Play Applause Sound
+        function playApplause() {
+            try {
+                const audio = document.getElementById('applauseSound');
+                audio.currentTime = 0;
+                audio.play().catch(e => {
+                    console.log('Audio play failed:', e);
+                    // Fallback: create audio context beep
+                    createBeepSound();
+                });
+            } catch (error) {
+                console.log('Applause error:', error);
+                createBeepSound();
+            }
+        }
+
+        // Create Beep Sound (fallback)
+        function createBeepSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 1);
+                
+                // Play multiple beeps for applause effect
+                setTimeout(() => createSingleBeep(600), 200);
+                setTimeout(() => createSingleBeep(700), 400);
+                setTimeout(() => createSingleBeep(900), 600);
+            } catch (error) {
+                console.log('Beep sound failed:', error);
+            }
+        }
+
+        function createSingleBeep(frequency) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (error) {
+                console.log('Single beep failed:', error);
+            }
+        }
+
+        // Show Celebration Effect
+        function showCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.classList.remove('hidden');
+            
+            // Create confetti
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    createConfetti();
+                }, i * 100);
+            }
+            
+            // Hide celebration after 3 seconds
+            setTimeout(() => {
+                celebration.classList.add('hidden');
+                celebration.innerHTML = '';
+            }, 3000);
+        }
+
+        // Create Confetti
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.background = getRandomColor();
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            
+            document.getElementById('celebration').appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.parentNode.removeChild(confetti);
+                }
+            }, 4000);
+        }
+
+        // Get Random Color
+        function getRandomColor() {
+            const colors = ['#4fc3f7', '#66bb6a', '#ffa726', '#ef5350', '#ab47bc', '#26a69a'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Restart Game
+        function restartGame() {
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('levelScreen').classList.remove('hidden');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Space Quiz Game Ready! 🚀');
+            initializeApplause();
+        });
+    </script>
+</body>
+</html>

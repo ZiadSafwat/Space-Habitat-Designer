@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Habitat - Article</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a237e;
+            --primary-light: #534bae;
+            --primary-dark: #000051;
+            --accent: #ff4081;
+            --text: #e6f1ff;
+            --text-light: #a8b2d1;
+            --background: #0a192f;
+            --surface: rgba(255, 255, 255, 0.05);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: var(--accent);
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+        
+        .article-header {
+            margin-bottom: 2rem;
+        }
+        
+        .article-category {
+            display: inline-block;
+            background: rgba(255, 64, 129, 0.2);
+            color: var(--accent);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .article-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #64ffda, #a8ff80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            gap: 1.5rem;
+        }
+        
+        .article-meta span {
+            display: flex;
+            align-items: center;
+        }
+        
+        .article-meta i {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+        
+        .pdf-download {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 64, 129, 0.2);
+            color: var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .pdf-download:hover {
+            background: rgba(255, 64, 129, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .pdf-download i {
+            margin-right: 0.5rem;
+        }
+        
+        .article-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+        
+        .article-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .article-title {
+                font-size: 2rem;
+            }
+            
+            .article-image {
+                height: 300px;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .article-meta span {
+                margin-bottom: 0;
+            }
+            
+            .pdf-download {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .article-content p {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem 0.75rem;
+            }
+            
+            header {
+                padding: 1.5rem 0;
+                margin-bottom: 2rem;
+            }
+            
+            .back-button {
+                font-size: 0.9rem;
+            }
+            
+            .article-category {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.75rem;
+            }
+            
+            .article-title {
+                font-size: 1.75rem;
+            }
+            
+            .article-image {
+                height: 220px;
+                border-radius: 6px;
+            }
+            
+            .article-content {
+                padding: 0;
+            }
+            
+            .article-content p {
+                font-size: 0.95rem;
+                line-height: 1.7;
+            }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted loop>
+        <source src="videos/signInBackground.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <div class="container">
+        <a href="#" onclick="history.back()" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Articles
+        </a>
+        
+        <article id="article-content">
+            <!-- Article content will be inserted here by JavaScript -->
+            <div class="loading">Loading article...</div>
+        </article>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get article ID from URL query parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = parseInt(urlParams.get('id')) || 1;
+            
+            // Load articles data
+            fetch('data/articles.json')
+                .then(response => response.json())
+                .then(data => {
+                    const article = data.articles.find(a => a.id === articleId);
+                    if (article) {
+                        displayArticle(article);
+                    } else {
+                        document.getElementById('article-content').innerHTML = 
+                            '<div class="error">Article not found</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading article:', error);
+                    document.getElementById('article-content').innerHTML = 
+                        '<div class="error">Error loading article. Please try again later.</div>';
+                });
+            
+            function displayArticle(article) {
+                const articleContent = `
+                    <header class="article-header">
+                        <span class="article-category">${article.category}</span>
+                        <h1 class="article-title">${article.title}</h1>
+                        <div class="article-meta">
+                            <span><i class="fas fa-user"></i> ${article.author}</span>
+                            <span><i class="far fa-calendar-alt"></i> ${new Date(article.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                            ${article.pdf ? `<a href="${article.pdf}" class="pdf-download" target="_blank" download>
+                                <i class="fas fa-file-pdf"></i> Download PDF
+                            </a>` : ''}
+                        </div>
+                    </header>
+                    
+                    <img src="${article.image}" alt="${article.title}" class="article-image">
+                    
+                    <div class="article-content">
+                        ${article.content.map(paragraph => `<p>${paragraph}</p>`).join('')}
+                    </div>
+                `;
+                
+                document.getElementById('article-content').innerHTML = articleContent;
+                document.title = `${article.title} | Space Habitat`;
+            }
+        });
+    </script>
+</body>
+</html>
