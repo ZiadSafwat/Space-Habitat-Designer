@@ -26,14 +26,13 @@
         
         body {
             margin: 0;
-            padding: 0;
+            padding: 1rem 0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
-            overflow: hidden;
             color: white;
         }
         
@@ -149,16 +148,50 @@
             color: var(--accent);
         }
         
-        @media (max-width: 768px) {
+        /* Enhanced responsive design */
+        @media (max-width: 320px) {
             .container {
-                padding: 2rem 1.5rem;
-                margin: 1rem;
-                width: auto;
+                padding: 1.5rem 1rem;
+                margin: 0.5rem;
+                max-width: 100%;
+            }
+            
+            .logo i {
+                font-size: 3.5rem;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .welcome-text {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
             }
             
             .btn {
                 width: 100%;
-                margin: 0.5rem 0;
+                margin: 0.4rem 0;
+                padding: 1rem 1.5rem;
+                font-size: 1rem;
+                min-width: auto;
+            }
+            
+            .user-info {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem 1.5rem;
+                margin: 0.75rem;
+            }
+            
+            .logo i {
+                font-size: 4rem;
             }
             
             h1 {
@@ -169,6 +202,76 @@
             .welcome-text {
                 font-size: 1rem;
                 margin-bottom: 2rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 0.5rem 0;
+                padding: 1.1rem 2rem;
+                min-width: auto;
+            }
+        }
+        
+        @media (min-width: 481px) and (max-width: 767px) {
+            .container {
+                max-width: 600px;
+                padding: 2.5rem;
+            }
+            
+            .btn {
+                width: 100%;
+                margin: 0.6rem 0;
+                max-width: 400px;
+            }
+            
+            .btn-group {
+                align-items: center;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .container {
+                max-width: 700px;
+                padding: 3rem;
+            }
+            
+            .btn {
+                width: auto;
+                margin: 0.75rem;
+                min-width: 280px;
+            }
+            
+            .btn-group {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 800px;
+                padding: 3.5rem;
+            }
+            
+            .logo i {
+                font-size: 5.5rem;
+            }
+            
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .welcome-text {
+                font-size: 1.3rem;
+                max-width: 700px;
+            }
+            
+            .btn {
+                min-width: 300px;
+                padding: 1.3rem 2.8rem;
+                font-size: 1.2rem;
             }
         }
     </style>
