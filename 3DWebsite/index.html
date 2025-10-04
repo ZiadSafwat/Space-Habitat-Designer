@@ -1,207 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🛰️ Space Habitats - تصميم المساكن الفضائية</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="./styles.css">
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/TransformControls.js"></script>
-    <script src="https://unpkg.com/three@0.128.0/examples/js/pmrem/PMREMGenerator.js"></script>
-</head>
-<body>
-    <header>
-        <div class="logo">
-            <div class="logo-icon">🛰️</div>
-            <h1>Space Habitats - تصميم المساكن الفضائية</h1>
-        </div>
-        <div class="header-controls">
-            <button class="secondary" onclick="toggleHelp()"><i class="fas fa-question-circle"></i> المساعدة</button>
-            <button class="secondary" onclick="toggleStatsPanel()"><i class="fas fa-chart-bar"></i> الإحصائيات</button>
-        </div>
-    </header>
-    
-    <div id="main-container">
-        <button class="sidebar-toggle" onclick="toggleSidebar()">
-            <i class="fas fa-chevron-right" id="sidebar-icon"></i>
-        </button>
-        
-        <div id="sidebar">
-            <div class="section">
-                <h3><i class="fas fa-rocket"></i> المهمة</h3>
-                <div class="form-group">
-                    <label for="astronauts">عدد رواد الفضاء</label>
-                    <div class="range-container">
-                        <input type="range" id="astronauts-range" min="1" max="12" value="4">
-                        <span class="range-value" id="astronauts-value">4</span>
-                    </div>
-                    <input type="number" id="astronauts" value="4" min="1" style="display: none;">
-                </div>
-                <div class="form-group">
-                    <label for="duration">مدة المهمة (أشهر)</label>
-                    <input type="number" id="duration" value="6" min="1">
-                </div>
-                <div class="form-group">
-                    <label for="location">الموقع</label>
-                    <select id="location">
-                        <option>القمر</option>
-                        <option>المريخ</option>
-                        <option>مدار أرضي</option>
-                        <option>الفضاء العميق</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="total-volume">الحجم الإجمالي (م³)</label>
-                    <div class="range-container">
-                        <input type="range" id="volume-range" min="50" max="500" value="150" step="10">
-                        <span class="range-value" id="volume-value">150</span>
-                    </div>
-                    <input type="number" id="total-volume" value="150" min="10" style="display: none;">
-                </div>
-            </div>
-            
-            <div class="section">
-                <h3><i class="fas fa-shapes"></i> شكل المسكن</h3>
-                <div class="form-group">
-                    <label for="shape">الشكل</label>
-                    <select id="shape">
-                        <option value="cylindrical">أسطواني</option>
-                        <option value="spherical">كروي</option>
-                        <option value="toroidal">حلقي</option>
-                        <option value="modular">وحدات منفصلة</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="floors">عدد الطوابق</label>
-                    <input type="number" id="floors" value="1" min="1" max="5">
-                </div>
-                <div class="form-group">
-                    <label for="diameter">قطر المسكن (م)</label>
-                    <div class="range-container">
-                        <input type="range" id="diameter-range" min="5" max="30" value="10" step="1">
-                        <span class="range-value" id="diameter-value">10</span>
-                    </div>
-                    <input type="number" id="diameter" value="10" min="1" style="display: none;">
-                </div>
-            </div>
-            
-            <div class="section">
-                <h3><i class="fas fa-globe-americas"></i> البيئة</h3>
-                <div class="form-group">
-                    <label for="environment">البيئة</label>
-                    <select id="environment" onchange="updateEnvironment()">
-                        <option value="moon">سطح القمر</option>
-                        <option value="mars">سطح المريخ</option>
-                        <option value="earth-orbit">مدار أرضي</option>
-                        <option value="deep-space">الفضاء العميق</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="lighting-intensity">شدة الإضاءة</label>
-                    <div class="range-container">
-                        <input type="range" id="lighting-intensity" min="0" max="2" value="1.0" step="0.1">
-                        <span class="range-value" id="lighting-value">1.0</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="lighting-color">لون الضوء</label>
-                    <input type="color" id="lighting-color" value="#ffffff">
-                </div>
-            </div>
-            
-            <div class="section">
-                <h3><i class="fas fa-cubes"></i> الوحدات المتاحة</h3>
-                <div id="modules-list">
-                    <!-- Module buttons with images will be added here by JavaScript -->
-                </div>
-            </div>
-            
-            <div class="section">
-                <button class="danger" onclick="resetDesign()"><i class="fas fa-trash-alt"></i> إعادة تعيين</button>
-                <button class="success" onclick="optimizeDesign()"><i class="fas fa-magic"></i> تحسين تلقائي</button>
-                <button onclick="exportDesign()"><i class="fas fa-download"></i> تصدير التصميم</button>
-            </div>
-        </div>
-        
-        <div id="viewport">
-            <canvas id="canvas"></canvas>
-            
-            <div class="stats-panel">
-                <h4>إحصائيات المسكن</h4>
-                <div class="stats-item">
-                    <span>الوحدات المضافة:</span>
-                    <span id="modules-count">0</span>
-                </div>
-                <div class="stats-item">
-                    <span>مساحة الأرضية:</span>
-                    <span id="floor-area">0 م²</span>
-                </div>
-                <div class="stats-item">
-                    <span>كفاءة المساحة:</span>
-                    <span id="space-efficiency">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress" id="efficiency-bar"></div>
-                </div>
-            </div>
-            
-            <div id="controls-panel">
-                <h4>تحكم في العنصر</h4>
-                <div class="control-group">
-                    <label>الموقع X: <input type="number" id="pos-x" step="0.1"></label>
-                    <label>الموقع Y: <input type="number" id="pos-y" step="0.1"></label>
-                    <label>الموقع Z: <input type="number" id="pos-z" step="0.1"></label>
-                </div>
-                <div class="control-group">
-                    <label>الدوران X: <input type="number" id="rot-x" step="1"></label>
-                    <label>الدوران Y: <input type="number" id="rot-y" step="1"></label>
-                    <label>الدوران Z: <input type="number" id="rot-z" step="1"></label>
-                </div>
-                <div class="control-buttons">
-                    <button onclick="applyControls()"><i class="fas fa-check"></i> تطبيق</button>
-                    <button class="danger" onclick="deleteSelected()"><i class="fas fa-trash"></i> حذف</button>
-                    <button onclick="snapToSurface()"><i class="fas fa-magnet"></i> الالتصاق</button>
-                    <button onclick="duplicateSelected()"><i class="fas fa-copy"></i> نسخ</button>
-                </div>
-            </div>
-            
-            <div class="view-controls">
-                <button onclick="toggleGrid()"><i class="fas fa-th"></i></button>
-                <button onclick="toggleWireframe()"><i class="fas fa-border-style"></i></button>
-                <button onclick="resetCamera()"><i class="fas fa-crosshairs"></i></button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="feedback">
-        <div class="feedback-item">
-            <i class="fas fa-cube"></i>
-            <span id="used-volume">الحجم المستخدم: 0 م³</span>
-        </div>
-        <div class="feedback-item">
-            <i class="fas fa-arrows-alt-v"></i>
-            <span id="remaining-volume">الحجم المتبقي: 150 م³</span>
-        </div>
-        <div class="feedback-item">
-            <i class="fas fa-user-astronaut"></i>
-            <span id="per-astronaut">م³ لكل رائد: 37.5</span>
-        </div>
-        <div class="feedback-item">
-            <i class="fas fa-heartbeat"></i>
-            <span id="status">حالة: جيد</span>
-        </div>
-    </div>
-    
-    <div class="notification" id="notification">
-        <i class="fas fa-info-circle"></i>
-        <span id="notification-text">تمت الإضافة بنجاح!</span>
-    </div>
-<script src="./script.js"></script>
-
-</body>
-</html>
