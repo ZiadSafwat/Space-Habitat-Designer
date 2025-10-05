@@ -1,0 +1,138 @@
+
+:root {
+    --dark-bg: #121217;
+    --nav-bg: #2A2540;        
+    --text-light: #FFFFFF;    
+    --accent-pink: #7a616a;
+    --accent-blue: #00BCD4;   
+}
+
+
+.navbar {
+    background-color: var(--nav-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+
+.navbar-brand {
+    color: var(--text-light);
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.navbar-brand:hover {
+    color: var(--accent-blue);
+}
+
+
+.navbar-links ul {
+    display: flex;
+    list-style: none;
+}
+
+.navbar-links li a {
+    text-decoration: none;
+    color: var(--text-light);
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+
+.navbar-links li a:hover,
+.navbar-links li a.active {
+    background-color: var(--accent-pink); 
+    color: var(--text-light);
+}
+
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .navbar-links {
+
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        background-color: var(--nav-bg);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+
+        height: 0;
+        overflow: hidden;
+        transition: height 0.3s ease-in-out;
+        z-index: 10;
+    }
+
+    .navbar-links.active {
+        
+        height: auto;
+        min-height: 200px;
+    }
+
+    .navbar-links ul {
+        flex-direction: column;
+        padding: 10px 0;
+    }
+
+    .navbar-links li {
+        text-align: center;
+        margin: 5px 0;
+    }
+
+    .navbar-links li a {
+        display: block;
+        padding: 12px 20px;
+    }
+}
+
+
+.main-content-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: var(--nav-bg);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.content-section {
+    display: none;
+    padding: 20px;
+    color: var(--text-light);
+}
+
+.content-section.active {
+    display: block; 
+}
+
+.content-section h2 {
+    color: var(--accent-blue);
+    margin-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.content-section p {
+    line-height: 1.6;
+}

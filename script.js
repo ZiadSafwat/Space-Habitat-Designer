@@ -104,6 +104,40 @@ const ITEMS = [
         per_person: false, 
         category: "Sanitation",
         description: "Waste processing and recycling system"
+    },
+    // Sleep-related units for analysis (beds)
+    { 
+        name: "Sleeping Pod", 
+        width: 2.2, 
+        length: 1.0, 
+        color: "#3949ab", 
+        icon: "images/Sleeping Pod.png",
+        per_person: true,
+        capacity: 1,
+        category: "Sleep",
+        description: "Individual sleeping pod with privacy"
+    },
+    { 
+        name: "Crew Bunk Bed", 
+        width: 2.0, 
+        length: 1.2, 
+        color: "#1e88e5", 
+        icon: "images/Crew Bunk Bed.png",
+        per_person: false,
+        capacity: 2,
+        category: "Sleep",
+        description: "Two-level bunk sleeping unit"
+    },
+    { 
+        name: "Private Crew Quarters", 
+        width: 2.5, 
+        length: 1.8, 
+        color: "#1976d2", 
+        icon: "images/Private Crew Quarters.png",
+        per_person: true,
+        capacity: 1,
+        category: "Sleep",
+        description: "Enclosed crew sleeping and personal storage"
     }
 ];
 
@@ -1027,49 +1061,131 @@ function showDesignAnalysis() {
 
 function calculateHabitatVolume(asString = false) {
     const shape = HABITAT_SHAPES[appState.habitatShape];
-    const bbox = shape.getBoundingBox(appState.habitatLength, appState.habitatWidth);
-    const volume = bbox.width * bbox.height * appState.habitatHeight;
+    // Use shape-specific volume formula for accuracy
+    const baseVolume = shape.calculateVolume(
+        appState.habitatLength,
+        appState.habitatWidth,
+        appState.habitatHeight
+    );
+    const levels = appState.multiLevelMode ? appState.totalLevels : 1;
+    const volume = baseVolume * levels;
     return asString ? volume.toFixed(1) : volume;
 }
 
 function calculateRequiredVolume(asString = false) {
-    // Base volume per astronaut (in cubic meters)
-    const VOLUME_PER_ASTRONAUT = 12;
-    // Additional volume per day of mission (in cubic meters)
-    const VOLUME_PER_DAY = 0.5;
-    
-    const baseVolume = (appState.numAstronauts || 0) * VOLUME_PER_ASTRONAUT;
-    const additionalVolume = (appState.missionDuration || 0) * VOLUME_PER_DAY;
-    const totalVolume = baseVolume + additionalVolume;
-    return asString ? totalVolume.toFixed(1) : totalVolume;
+    // Align with feedback formula for consistency
+    // Base required space per astronaut
+    const base = (appState.numAstronauts || 0) * MIN_SPACE_PER_PERSON;
+    // Mission duration factor: +10% per 30 days
+    const durationFactor = 1 + ((appState.missionDuration || 0) / 30) * 0.1;
+    // Environment multiplier
+    let envMultiplier = 1.0;
+    if (appState.environment === 'Mars') envMultiplier = 1.25;
+    else if (appState.environment === 'Moon') envMultiplier = 1.15;
+    else if (appState.environment === 'Space') envMultiplier = 1.05;
+    const total = base * durationFactor * envMultiplier;
+    return asString ? total.toFixed(1) : total;
 }
 
 function calculateAreaUsage() {
     const shape = HABITAT_SHAPES[appState.habitatShape];
-    const bbox = shape.getBoundingBox(appState.habitatLength, appState.habitatWidth);
-    const totalArea = bbox.width * bbox.height;
-    
-    let usedArea = 0;
+    // Area per level in square meters (use shape.calculateArea, not pixel bbox)
+    const areaPerLevel = shape.calculateArea(appState.habitatLength, appState.habitatWidth);
+
+    // Sum used area across all levels in square meters (do NOT use SCALE here)
+    let usedAreaM2 = 0;
     for (let level = 0; level < appState.totalLevels; level++) {
-        for (const item of placedItems[level]) {
-            usedArea += (item.data.width * SCALE) * (item.data.length * SCALE);
+        const items = placedItems[level] || [];
+        for (const item of items) {
+            usedAreaM2 += (item.data.width || 0) * (item.data.length || 0);
         }
     }
-    
-    return Math.min(100, Math.round((usedArea / totalArea) * 100));
+
+    // Total available area accounts for multi-level mode
+    const levels = appState.multiLevelMode ? appState.totalLevels : 1;
+    const totalAvailableM2 = areaPerLevel * levels;
+
+    if (totalAvailableM2 <= 0) return 0;
+    const pct = (usedAreaM2 / totalAvailableM2) * 100;
+    return Number(Math.max(0, Math.min(100, pct)).toFixed(2));
 }
 
 function countBeds() {
     let bedCount = 0;
     for (let level = 0; level < appState.totalLevels; level++) {
-        for (const item of placedItems[level]) {
-            if (item.data.name.toLowerCase().includes('bed') || 
-                item.data.name.toLowerCase().includes('sleep')) {
-                bedCount++;
+        const items = placedItems[level] || [];
+        for (const item of items) {
+            const name = (item.data.name || '').toLowerCase();
+            const isSleep = (item.data.category === 'Sleep') || name.includes('bed') || name.includes('sleep');
+            if (isSleep) {
+                const cap = Number(item.data.capacity);
+                bedCount += Number.isFinite(cap) && cap > 0 ? cap : 1;
             }
         }
     }
     return bedCount;
+}
+
+// Compute weighted systems coverage based on placed items
+function computeSystemsCoverage() {
+    // Weights by category (sum ~= 1.0)
+    const WEIGHTS = {
+        'Sleep': 0.35,
+        'Medical': 0.15,
+        'Sanitation': 0.10,
+        'Hygiene': 0.05,
+        'Galley': 0.10,
+        'Storage': 0.10,
+        'Workspace': 0.15
+    };
+    // Minimum requirements per category
+    const astronauts = appState.numAstronauts || 1;
+    const REQUIRED = {
+        'Sleep': Math.max(1, astronauts), // beds >= astronauts
+        'Medical': 1,
+        'Sanitation': 1,
+        'Hygiene': 1,
+        'Galley': 1,
+        'Storage': 1,
+        'Workspace': 1
+    };
+
+    // Count items by category and compute sleep capacity
+    const flat = placedItems.flat();
+    const counts = {};
+    let sleepCapacity = 0;
+    for (const it of flat) {
+        const cat = it.data.category || 'Other';
+        counts[cat] = (counts[cat] || 0) + 1;
+        if (cat === 'Sleep') {
+            const cap = Number(it.data.capacity);
+            sleepCapacity += Number.isFinite(cap) && cap > 0 ? cap : 1;
+        }
+    }
+
+    // Replace Sleep count with capacity-based count
+    if (sleepCapacity > 0) counts['Sleep'] = sleepCapacity;
+
+    // Compute weighted score
+    let score = 0;
+    let totalWeights = 0;
+    Object.entries(WEIGHTS).forEach(([cat, w]) => {
+        totalWeights += w;
+        const actual = counts[cat] || 0;
+        const required = REQUIRED[cat] || 1;
+        const ratio = Math.max(0, Math.min(1, actual / required));
+        score += ratio * w;
+    });
+
+    const pct = totalWeights > 0 ? (score / totalWeights) * 100 : 0;
+    const percentage = Number(pct.toFixed(2));
+
+    let status = 'info';
+    if (percentage < 60) status = 'danger';
+    else if (percentage < 80) status = 'warning';
+    else status = 'good';
+
+    return { percentage, status };
 }
 
 function calculateStructureEfficiency() {
@@ -1101,6 +1217,7 @@ function updateModalAnalysis() {
     const areaUsage = calculateAreaUsage();
     const bedsAvailable = countBeds();
     const structureEfficiency = calculateStructureEfficiency();
+    const systems = computeSystemsCoverage();
     
     // Function to safely update element text content
     const updateElement = (id, value, suffix = '') => {
@@ -1108,12 +1225,67 @@ function updateModalAnalysis() {
         if (el) el.textContent = `${value}${suffix}`;
     };
     
-    // Update modal values
-    updateElement('modal-volume-total', volumeTotal, ' m³');
-    updateElement('modal-volume-required', volumeRequired, ' m³');
-    updateElement('modal-area-usage', areaUsage, '%');
+    // Update modal values (two decimals)
+    updateElement('modal-volume-total', volumeTotal.toFixed(2), ' m³');
+    updateElement('modal-volume-required', volumeRequired.toFixed(2), ' m³');
+    updateElement('modal-area-usage', areaUsage.toFixed ? areaUsage.toFixed(2) : Number(areaUsage).toFixed(2), '%');
     updateElement('modal-beds-available', `${bedsAvailable}/${appState.numAstronauts}`);
-    updateElement('modal-structure-efficiency', structureEfficiency, '%');
+    updateElement('modal-structure-efficiency', Number(structureEfficiency).toFixed(2), '%');
+    updateElement('modal-equipment-score', systems.percentage.toFixed(2), '%');
+    
+    // Calculate overall status based on analysis (priority: danger > warning > good > info)
+    let overallStatus = 'info'; // Default to info (blue)
+    const statusPriority = { 'danger': 4, 'warning': 3, 'good': 2, 'info': 1 };
+    
+    const updateStatus = (newStatus) => {
+        if (statusPriority[newStatus] > statusPriority[overallStatus]) {
+            overallStatus = newStatus;
+        }
+    };
+    
+    // Check volume status
+    if (volumeTotal < volumeRequired) {
+        updateStatus('danger'); // Not enough volume is critical
+    } else {
+        updateStatus('good');
+    }
+    
+    // Check beds status
+    if (bedsAvailable < appState.numAstronauts) {
+        updateStatus('danger'); // Not enough beds is critical
+    } else {
+        updateStatus('good');
+    }
+    
+    // Check structure efficiency
+    if (structureEfficiency < 75) {
+        updateStatus('danger'); // Low structural integrity is critical
+    } else if (structureEfficiency < 90) {
+        updateStatus('warning'); // Average structural integrity needs attention
+    } else {
+        updateStatus('good');
+    }
+    
+    // Check area usage
+    if (areaUsage >= 90) {
+        updateStatus('danger'); // Over 90% usage is critical
+    } else if (areaUsage >= 80) {
+        updateStatus('warning'); // 80-90% usage needs attention
+    } else {
+        updateStatus('info'); // Under 80% is informational
+    }
+
+    // Systems coverage affects status
+    updateStatus(systems.status);
+    
+    // Apply status class to modal
+    const modal = document.getElementById('design-analysis-modal');
+    if (modal) {
+        // Remove all status classes
+        modal.classList.remove('status-danger', 'status-warning', 'status-good', 'status-info');
+        // Add current status class
+        modal.classList.add(`status-${overallStatus}`);
+    }
     
     // Update summary based on the analysis
     updateAnalysisSummary();
@@ -1157,9 +1329,9 @@ function updateAnalysisSummary() {
     
     // Volume analysis
     if (volumeTotal >= volumeRequired) {
-        summary += `<p>✅ Your habitat has sufficient volume (${volumeTotal.toFixed(1)} m³) for the mission requirements (${volumeRequired.toFixed(1)} m³).</p>`;
+        summary += `<p>✅ Your habitat has sufficient volume (${volumeTotal.toFixed(2)} m³) for the mission requirements (${volumeRequired.toFixed(2)} m³).</p>`;
     } else {
-        const needed = (volumeRequired - volumeTotal).toFixed(1);
+        const needed = (volumeRequired - volumeTotal).toFixed(2);
         summary += `<p>❌ Your habitat needs ${needed} m³ more volume to meet the mission requirements.</p>`;
     }
     
@@ -1173,23 +1345,64 @@ function updateAnalysisSummary() {
     
     // Structure analysis
     if (structureEfficiency >= 90) {
-        summary += `<p>✅ Excellent structural integrity (${structureEfficiency}%). Your habitat is well-designed for space conditions.</p>`;
+        summary += `<p>✅ Excellent structural integrity (${structureEfficiency.toFixed(2)}%). Your habitat is well-designed for space conditions.</p>`;
     } else if (structureEfficiency >= 75) {
-        summary += `<p>⚠️ Average structural integrity (${structureEfficiency}%). Consider reinforcing your design for better safety margins.</p>`;
+        summary += `<p>⚠️ Average structural integrity (${structureEfficiency.toFixed(2)}%). Consider reinforcing your design for better safety margins.</p>`;
     } else {
-        summary += `<p>❌ Low structural integrity (${structureEfficiency}%). Your habitat may not withstand space conditions. Consider redesigning.</p>`;
+        summary += `<p>❌ Low structural integrity (${structureEfficiency.toFixed(2)}%). Your habitat may not withstand space conditions. Consider redesigning.</p>`;
     }
     
     // Area usage analysis
     if (areaUsage < 70) {
-        summary += `<p>ℹ️ Your area usage is ${areaUsage}%. You have room for additional modules or expansion.</p>`;
+        summary += `<p>ℹ️ Your area usage is ${Number(areaUsage).toFixed(2)}%. You have room for additional modules or expansion.</p>`;
     } else if (areaUsage < 90) {
-        summary += `<p>ℹ️ Your area usage is ${areaUsage}%. Efficient use of space, but consider future expansion needs.</p>`;
+        summary += `<p>ℹ️ Your area usage is ${Number(areaUsage).toFixed(2)}%. Efficient use of space, but consider future expansion needs.</p>`;
     } else {
-        summary += `<p>⚠️ Your area usage is ${areaUsage}%. Your habitat is reaching maximum capacity. Consider a larger design or more efficient layout.</p>`;
+        summary += `<p>⚠️ Your area usage is ${Number(areaUsage).toFixed(2)}%. Your habitat is reaching maximum capacity. Consider a larger design or more efficient layout.</p>`;
     }
     
-    summaryElement.innerHTML = summary;
+    // Units breakdown (counts per category and per item)
+    const systems = computeSystemsCoverage();
+    const flatItems = placedItems.flat();
+    const byCategory = {};
+    const byItem = {};
+    for (const it of flatItems) {
+        const cat = it.data.category || 'Other';
+        byCategory[cat] = (byCategory[cat] || 0) + 1;
+        const name = it.data.name || 'Unknown';
+        byItem[name] = (byItem[name] || 0) + 1;
+    }
+
+    // Build readable breakdown HTML
+    const totalUnits = flatItems.length;
+    const uniqueTypes = Object.keys(byItem).length;
+    let breakdownHtml = `<h3>Units Breakdown</h3>`;
+    breakdownHtml += `<p>Total Units Placed: <strong>${totalUnits}</strong> — Unique Types: <strong>${uniqueTypes}</strong></p>`;
+
+    // Show categories summary
+    if (totalUnits > 0) {
+        breakdownHtml += '<ul style="margin:0.5rem 0 0.75rem 1.2rem;">';
+        Object.entries(byCategory)
+            .sort((a,b)=> b[1]-a[1])
+            .forEach(([cat,count])=>{
+                breakdownHtml += `<li><strong>${cat}</strong>: ${count}</li>`;
+            });
+        breakdownHtml += '</ul>';
+
+        // Top 5 item types
+        breakdownHtml += '<div style="margin-top:0.5rem">';
+        breakdownHtml += '<p style="margin:0 0 0.25rem 0"><strong>Top Items</strong>:</p>';
+        const topItems = Object.entries(byItem).sort((a,b)=> b[1]-a[1]).slice(0,5);
+        breakdownHtml += '<ul style="margin:0 0 0.75rem 1.2rem;">';
+        topItems.forEach(([name,count])=>{
+            breakdownHtml += `<li>${name}: ${count}</li>`;
+        });
+        breakdownHtml += '</ul></div>';
+    } else {
+        breakdownHtml += '<p>No units placed yet.</p>';
+    }
+
+    summaryElement.innerHTML = summary + breakdownHtml;
 }
 
 async function exportToPDF() {
